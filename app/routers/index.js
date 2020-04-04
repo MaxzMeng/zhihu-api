@@ -6,9 +6,6 @@ module.exports = (app) => {
             return;
         }
         const route = require(`./${file}`);
-        console.log(route);
-        console.log(route.routes());
-        console.log(route.routes);
         app.use(route.routes()).use(route.allowedMethods());
     });
 };

@@ -1,5 +1,6 @@
 class UsersCtl {
     find(ctx) {
+        ctx.throw (412);
         ctx.body = "hahaha"
     }
 
