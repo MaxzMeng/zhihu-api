@@ -1,29 +1,44 @@
+const User = require('../models/users');
+
 class UsersCtl {
-    find(ctx) {
-        ctx.throw (412);
-        ctx.body = "hahaha"
+    async find(ctx) {
+        ctx.body = await User.find();
     }
 
-    findById(ctx) {
-        console.log(ctx.params.id);
-        ctx.body = "hahaha"
+    async findById(ctx) {
+        const user = await User.findById(ctx.params.id);
+        if (!user) {
+            ctx.throw(404, '用户不存在');
+        }
+        ctx.body = user;
     }
 
-    create(ctx) {
+    async create(ctx) {
         ctx.verifyParams({
-            name:{type:'string', required: true},
-            age: {type:'number', required: false}
+            name: {type: 'string', required: true},
         });
-        ctx.body = "hahaha"
+        const user = new User(ctx.request.body);
+        await user.save();
+        ctx.body = user;
     }
 
-    update(ctx) {
-        console.log(ctx.params.id);
-        ctx.body = "hahaha"
+    async update(ctx) {
+        ctx.verifyParams({
+            name: {type: 'string', required: true},
+        });
+        const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body);
+        if (!user) {
+            ctx.throw(404, '用户不存在');
+        }
+        ctx.body = user;
     }
 
-    delete(ctx) {
-
+    async delete(ctx) {
+        const user = await User.findByIdAndRemove(ctx.params.id);
+        if (!user) {
+            ctx.throw(404, '用户不存在');
+        }
+        ctx.status = 204;
     }
 }
 

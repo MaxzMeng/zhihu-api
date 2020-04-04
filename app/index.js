@@ -7,7 +7,7 @@ const app = new Koa();
 const routing = require('./routers');
 const {connectionStr} = require('./config');
 
-mongoose.connect(connectionStr, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
+mongoose.connect(connectionStr, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true}, () => {
     console.log('connect db success');
 });
 mongoose.connection.on('error', console.error);

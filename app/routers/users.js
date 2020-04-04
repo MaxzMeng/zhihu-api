@@ -4,8 +4,8 @@ const {find, findById, create, update, delete: del} = require('../controllers/us
 
 
 router.get('/', find);
-router.post('/', findById);
-router.get('/:id', create);
+router.post('/', create);
+router.get('/:id', findById);
 router.put('/:id', update);
 router.delete('/:id', del);
 
