@@ -1,7 +1,13 @@
 const jwt = require('koa-jwt');
 const Router = require('koa-router');
 const router = new Router({prefix: '/users'});
-const {find, findById, create, update, delete: del, login, checkOwner, listFollowing, follow, unFollow, listFollowers, checkUserExist} = require('../controllers/users');
+const {
+    find, findById, create, update, delete: del,
+    login, checkOwner,
+    listFollowing, follow, unFollow, listFollowers, checkUserExist,
+    followTopic, unFollowTopic, listFollowingTopics
+} = require('../controllers/users');
+const {checkTopicExist} = require('../controllers/topics');
 const {secret} = require('../config');
 
 const auth = jwt({secret});
@@ -16,5 +22,8 @@ router.get('/:id/following', listFollowing);
 router.get('/:id/followers', listFollowers);
 router.put('/following/:id', auth, checkUserExist, follow);
 router.delete('/following/:id', auth, checkUserExist, unFollow);
+router.get('/:id/followingTopics', listFollowingTopics);
+router.put('/followingTopics/:id', auth, checkTopicExist, followTopic);
+router.delete('/followingTopics/:id', auth, checkTopicExist, unFollowTopic);
 
 module.exports = router;
