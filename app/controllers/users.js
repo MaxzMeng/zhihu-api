@@ -1,10 +1,16 @@
 const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/users');
+const Question = require('../models/questions');
 const {secret} = require('../config');
 
 class UsersCtl {
     async find(ctx) {
-        ctx.body = await User.find();
+        const {per_page = 10} = ctx.query;
+        const page = Math.max(ctx.query.page * 1, 1) - 1;
+        const perPage = Math.max(per_page * 1, 1);
+        ctx.body = await User.find({name: new RegExp(ctx.query.q)})
+            .limit(perPage)
+            .skip(page * perPage);
     }
 
     async findById(ctx) {
@@ -121,7 +127,7 @@ class UsersCtl {
         ctx.status = 204;
     }
 
-    async unFollow(ctx) {
+    async unfollow(ctx) {
         const me = await User.findById(ctx.state.user._id).select('+following');
         const index = me.following.map(id => id.toString()).indexOf(ctx.params.id);
         if (index > -1) {
@@ -156,6 +162,11 @@ class UsersCtl {
             me.save();
         }
         ctx.status = 204;
+    }
+
+    async listQuestions(ctx) {
+        const questions = await Question.find({questioner: ctx.params.id});
+        ctx.body = questions;
     }
 }
 
